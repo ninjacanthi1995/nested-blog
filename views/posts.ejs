@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Nested Blog</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <script src="https://kit.fontawesome.com/a04f9d5609.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Nested Blog</h1>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-light">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="/posts">Posts</a></li>
+      </ol>
+    </nav>
+
+    <form action="/filter-category" method="POST" class="w-25 d-inline-block">
+      <div class="form-group">
+        <select class="form-control" name="category" onchange="if (this.value != '') this.form.submit();">
+          <option value="">Choose category...</option>
+          <% for( let category of categories ) { %>
+          <option value=<%= category %>><%= category %></option>  
+          <% } %>
+        </select>
+      </div>
+    </form>
+
+    <form action="/filter-user" method="POST" class="w-25 d-inline-block">
+      <div class="form-group">
+        <select class="form-control" name="user" onchange="if (this.value != '') this.form.submit();">
+          <option value="">Choose user...</option>
+          <% for( let user of users ) { %>
+          <option value=<%= user %>><%= user %></option>  
+          <% } %>
+        </select>
+      </div>
+    </form>
+
+    <ul class="list-group">
+      <% for( let i=0; i < posts.length; i++ ) { %>
+        <li class="list-group-item p-0 mb-3">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between">
+              <div>
+                <span>
+                  <%= posts[i].author %>
+                </span>
+                <span class="badge badge-info">
+                  <%= posts[i].category %>
+                </span>
+                <span>
+                  <%= dateFormat(posts[i].datePublication) %>
+                </span>
+              </div>
+              <div>
+                <button class="mr-3 comment-button btn btn-link" data-postid=<%=posts[i].id %>><span><i
+                      class="fas fa-comments"></i></span></button>
+                <a href="/delete-post?index=<%= i %>"><span><i class="fas fa-trash-alt"></i></span></a>
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">
+                <%= posts[i].title %>
+              </h5>
+              <p class="card-text">
+                <%= posts[i].description %>
+              </p>
+            </div>
+            <% if (posts[i].comments.length !==0) { %>
+              <% for( let j=0; j < posts[i].comments.length; j++ ) { %>
+                <div class="card-footer">
+                  <p class="card-text">
+                    <span class="badge badge-info">
+                      <%= posts[i].comments[j].author %>
+                    </span>
+                    <span class="badge badge-success">
+                      <%= dateFormat(posts[i].comments[j].datePublication) %>
+                    </span>
+                    <br>
+                    <%= posts[i].comments[j].description %>
+                  </p>
+                </div>
+                <% } %>
+                  <% } %>
+          </div>
+        </li>
+        <% } %>
+    </ul>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="/javascripts/comment.js"></script>
+</body>
+
+</html>
